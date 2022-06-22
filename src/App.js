@@ -1,6 +1,10 @@
 import './App.css';
+import { useEffect } from 'react';
 //useDispatch: 값을 변경할때 / useSelector: 값을 읽을때
 import { useDispatch, useSelector } from 'react-redux';
+import countUp, { up } from './countUpSlice';
+import countDown from './countDownSlice';
+
 function Left1(props) {
   return (
     <div>
@@ -23,11 +27,19 @@ function Left3(props) {
     <div>
       <h1>Left3</h1>
       <button
-        onClick={() => {
-          dispatch({ type: 'UP', step: 2 });
+        onClick={async () => {
+          // dispatch(countUp.actions.up(1));
+          dispatch(up(1));
         }}
       >
         +
+      </button>
+      <button
+        onClick={() => {
+          dispatch(countDown.actions.down(1));
+        }}
+      >
+        -
       </button>
     </div>
   );
@@ -49,13 +61,16 @@ function Right2(props) {
   );
 }
 function Right3(props) {
-  const value = useSelector((state) => {
-    return state.value;
+  const countUpValue = useSelector((state) => {
+    return state.countUp.value;
+  });
+  const countDownValue = useSelector((state) => {
+    return state.countDown.value;
   });
   return (
     <div>
       <h1>Right3</h1>
-      {value}
+      {countUpValue} | {countDownValue}
     </div>
   );
 }
