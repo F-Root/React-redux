@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 //useDispatch: 값을 변경할때 / useSelector: 값을 읽을때
 import { useDispatch, useSelector } from 'react-redux';
 import countUp, { up } from './countUpSlice';
-import countDown from './countDownSlice';
+import countDown, { down } from './countDownSlice';
 
 function Left1(props) {
   return (
@@ -23,11 +23,21 @@ function Left2(props) {
 }
 function Left3(props) {
   const dispatch = useDispatch();
+  const countUpValue = useSelector((state) => state.countUp.value);
+  const countDownValue = useSelector((state) => state.countDown.value);
   return (
     <div>
       <h1>Left3</h1>
       <button
         onClick={async () => {
+          const response = await fetch('http://localhost:3333/countUp', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ value: countUpValue + 1 }),
+          });
+          const result = await response.json();
           // dispatch(countUp.actions.up(1));
           dispatch(up(1));
         }}
@@ -35,8 +45,17 @@ function Left3(props) {
         +
       </button>
       <button
-        onClick={() => {
-          dispatch(countDown.actions.down(1));
+        onClick={async () => {
+          const response = await fetch('http://localhost:3333/countDown', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ value: countDownValue - 1 }),
+          });
+          const result = await response.json();
+          // dispatch(countDown.actions.down(1));
+          dispatch(down(1));
         }}
       >
         -
@@ -75,6 +94,19 @@ function Right3(props) {
   );
 }
 export default function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    (async () => {
+      const resp = await fetch('http://localhost:3333/countUp');
+      const result = await resp.json();
+      dispatch(countUp.actions.set(result.value));
+    })();
+    (async () => {
+      const resp = await fetch('http://localhost:3333/countDown');
+      const result = await resp.json();
+      dispatch(countDown.actions.set(result.value));
+    })();
+  }, []);
   return (
     <div id='app'>
       <h1>Root</h1>

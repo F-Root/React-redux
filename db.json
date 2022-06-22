@@ -1,4 +1,8 @@
 {
-  "countUp":"0",
-  "countDown":"0"
+  "countUp": {
+    "value": 0
+  },
+  "countDown": {
+    "value": 0
+  }
 }
